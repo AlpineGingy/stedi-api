@@ -61,28 +61,66 @@ spec:
 # initialDelaySeconds tells Kubernnetes to wait before doing a request
             initialDelaySeconds: 10
 # periodSeconds tells Kubernetes how often to check health
-            periodSeconds: 3
+            periodSeconds: 10
+# ---
+# # apiVersion tells what version of yaml to use
+# apiVersion: v1
+# # kind tells kube what kind of object to create
+# kind: Service
+# # metadata contains attributes about object
+# metadata:
+# # name is name of object creating
+#   name: stedi-andruw-loadbalancer
+# # spec is specification of the object (loadbalancer) 
+# spec:
+# # selector tells the network layer how to find the right pod
+#   selector:
+# # app tells selector which app to send traffic to
+#     app: stedi-andruw
+# # type tells kube the type of service we want
+# # a LoadBalancer distributes network packets to one or more pods
+#   type: LoadBalancer    
+# # ports are lists of ports tha Load Balancer listens on  
+#   ports:
+# # port is the port we want to listen on the network
+#     - port: 80
+# # targetport is the port the opd listens on inside kube
+#       targetPort: 4567   
 ---
-# apiVersion tells what version of yaml to use
-apiVersion: v1
-# kind tells kube what kind of object to create
-kind: Service
-# metadata contains attributes about object
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
 metadata:
-# name is name of object creating
-  name: stedi-andruw-loadbalancer
-# spec is specification of the object (loadbalancer) 
+  name: stedi-certificate-andruw
 spec:
-# selector tells the network layer how to find the right pod
+  domains:
+    - www.andruw.cit262.com
+    - andruw.cit262.com
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stedi-nodeport-andruw
+spec:
   selector:
-# app tells selector which app to send traffic to
-    app: stedi-andruw
-# type tells kube the type of service we want
-# a LoadBalancer distributes network packets to one or more pods
-  type: LoadBalancer    
-# ports are lists of ports tha Load Balancer listens on  
+    app: stedi
+  type: NodePort
   ports:
-# port is the port we want to listen on the network
-    - port: 80
-# targetport is the port the opd listens on inside kube
-      targetPort: 4567   
+    - protocol: TCP
+      port: 80
+      targetPort: 4567
+---
+  apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    name: stedi-ingress-andruw
+    annotations:
+      kubernetes.io/ingress.global-static-ip-name: stedi-public-andruw
+      networking.gke.io/managed-certificates: stedi-certificate-andruw
+      kubernetes.io/ingress.allow-http: "false"
+      kubernetes.io/ingress.class: "gce"
+  spec:
+    defaultBackend:
+      service:
+        name: stedi-nodeport-andruw
+        port:
+          number: 80
