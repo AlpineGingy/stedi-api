@@ -59,9 +59,9 @@ spec:
 # Port defines the port to use when doing the HTTP request
               port: 80
 # initialDelaySeconds tells Kubernnetes to wait before doing a request
-            initialDelaySeconds: 10
+            initialDelaySeconds: 30
 # periodSeconds tells Kubernetes how often to check health
-            periodSeconds: 10
+            periodSeconds: 30
 # ---
 # # apiVersion tells what version of yaml to use
 # apiVersion: v1
@@ -102,7 +102,7 @@ metadata:
   name: stedi-nodeport-andruw
 spec:
   selector:
-    app: stedi
+    app: stedi-andruw
   type: NodePort
   ports:
     - protocol: TCP
