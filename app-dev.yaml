@@ -5,7 +5,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
 # The name here is the name of our deployment
-  name: stedi-andruw
+  name: stedi-andruw-dev
 spec:
 # Replicas refers to the number of pods we deploy
   replicas: 1
@@ -14,21 +14,21 @@ spec:
 # Matchlabels are a label for my selector
     matchLabels:
 # App is a specific kind of label for my pod
-      app: stedi-andruw
+      app: stedi-andruw-dev
 # The template describes all the feature of my pod
   template:
 # The metadata provides labels for my template
     metadata:
       labels:
-        app: stedi-andruw
+        app: stedi-andruw-dev
 # The spec refers to the specifications of my containers in my pod    
     spec:
 # Containers can have one or more Docker containers in the pod
       containers:
 # The name of the container is specified below
-        - name: stedi-andruw
+        - name: stedi-andruw-dev
 # The image is a prebuilt file containing the operating system
-          image: gcr.io/group-project-cloud-account/stedi-andruw
+          image: gcr.io/group-project-cloud-account/stedi-andruw-dev
           env:
             - name: REDIS_PASSWORD
               valueFrom:
@@ -73,8 +73,6 @@ spec:
             periodSeconds: 30  
 
 ---
-
-
 #Ingress/Managed Certificates start
 
 apiVersion: networking.gke.io/v1
@@ -102,15 +100,32 @@ spec:
   apiVersion: networking.k8s.io/v1
   kind: Ingress
   metadata:
-    name: stedi-ingress-andruw
+    name: stedi-ingress-andruw-dev
     annotations:
-      kubernetes.io/ingress.global-static-ip-name: stedi-public-andruw
-      networking.gke.io/managed-certificates: stedi-certificate-andruw
+      kubernetes.io/ingress.global-static-ip-name: stedi-public-andruw-dev
+      networking.gke.io/managed-certificates: stedi-certificate-andruw-dev
       kubernetes.io/ingress.allow-http: "false"
       kubernetes.io/ingress.class: "gce"
   spec:
-    defaultBackend:
-      service:
-        name: stedi-nodeport-andruw
-        port:
-          number: 80
+    rules:
+      - http:
+          paths:
+          - path: /dev
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: stedi-nodeport-andruw-dev
+                port:
+                  number: 80
+          - path: /discounted
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: my-discounted-products
+                port:
+                  number: 80
+    # defaultBackend:
+    #   service:
+    #     name: stedi-nodeport-andruw-dev
+    #     port:
+    #       number: 80
