@@ -1,11 +1,8 @@
-# This is a comment
-
 # this is the version of YAML we are using with the Kubernetes API
 apiVersion: apps/v1
 # The kind is the type of Kubernetes resouce we are using
 # A deployment is when we run code on a server
 kind: Deployment
-# Metadata is information related to the object we created in Kubernetes
 metadata:
 # The name here is the name of our deployment
   name: stedi-andruw
@@ -32,6 +29,18 @@ spec:
         - name: stedi-andruw
 # The image is a prebuilt file containing the operating system
           image: gcr.io/group-project-cloud-account/stedi-andruw
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret-dev-andruw
+                  key: REDIS_PASS
+            - name: REDIS_HOST
+              value: "redis-stedi-dev-andruw"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_DB
+              value: "0"
 # The ports is a list of tcp ports the pod listens on
           ports:
 # The container port is a specific port the pod listens on
@@ -61,32 +70,13 @@ spec:
 # initialDelaySeconds tells Kubernnetes to wait before doing a request
             initialDelaySeconds: 30
 # periodSeconds tells Kubernetes how often to check health
-            periodSeconds: 30
-# ---
-# # apiVersion tells what version of yaml to use
-# apiVersion: v1
-# # kind tells kube what kind of object to create
-# kind: Service
-# # metadata contains attributes about object
-# metadata:
-# # name is name of object creating
-#   name: stedi-andruw-loadbalancer
-# # spec is specification of the object (loadbalancer) 
-# spec:
-# # selector tells the network layer how to find the right pod
-#   selector:
-# # app tells selector which app to send traffic to
-#     app: stedi-andruw
-# # type tells kube the type of service we want
-# # a LoadBalancer distributes network packets to one or more pods
-#   type: LoadBalancer    
-# # ports are lists of ports tha Load Balancer listens on  
-#   ports:
-# # port is the port we want to listen on the network
-#     - port: 80
-# # targetport is the port the opd listens on inside kube
-#       targetPort: 4567   
+            periodSeconds: 30  
+
 ---
+
+
+#Ingress/Managed Certificates start
+
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
