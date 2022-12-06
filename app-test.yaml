@@ -28,7 +28,7 @@ spec:
 # The name of the container is specified below
         - name: stedi-andruw-test
 # The image is a prebuilt file containing the operating system
-          image: gcr.io/group-project-cloud-account/stedi-andruw-test
+          image: gcr.io/group-project-cloud-account/stedi-andruw
           env:
             - name: REDIS_PASSWORD
               valueFrom:
