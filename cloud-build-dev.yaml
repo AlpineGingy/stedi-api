@@ -54,6 +54,7 @@ steps:
       - run
       - --filename=app-dev.yaml
       - --image=gcr.io/$PROJECT_ID/stedi-andruw-dev:$SHORT_SHA
+      - --output=/tmp/outputdev
       - --location=us-central1-c
       - --cluster=cluster-1
 
@@ -72,10 +73,10 @@ steps:
 # This step deploys the stage application in Kubernetes
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
-    - builds
-    - submit
-    - --config
-    - cloud-build-test.yaml
+      - builds
+      - submit
+      - --config
+      - cloud-build-test.yaml
   #   - --substitutions
   #   - _SHORT_SHA=$SHORT_SHA
   #   - .
