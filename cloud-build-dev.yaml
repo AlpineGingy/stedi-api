@@ -53,7 +53,7 @@ steps:
     args:
       - run
       - --filename=app-dev.yaml
-      - --image=gcr.io/$PROJECT_ID/stedi-andruw-dev:$SHORT_SHA
+      - --image=gcr.io/$PROJECT_ID/stedi-andruw:$SHORT_SHA
       - --output=/tmp/outputdev
       - --location=us-central1-c
       - --cluster=cluster-1
