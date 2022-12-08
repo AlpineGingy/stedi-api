@@ -46,7 +46,7 @@ spec:
           - name: REDIS_PASS
             valueFrom:
               secretKeyRef:
-                name: redis-secret-dev-andruw
+                name: redis-secrets-dev-andruw
                 key: REDIS_PASS
           volumeMounts:
             - name: redis-dev-volume

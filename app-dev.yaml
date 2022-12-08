@@ -33,7 +33,7 @@ spec:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: redis-secret-dev-andruw
+                  name: redis-secrets-dev-andruw
                   key: REDIS_PASS
             - name: REDIS_HOST
               value: "redis-stedi-dev-andruw"
@@ -87,7 +87,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: stedi-nodeport-andruw
+  name: stedi-nodeport-andruw-dev
 spec:
   selector:
     app: stedi-andruw
@@ -107,25 +107,8 @@ spec:
       kubernetes.io/ingress.allow-http: "false"
       kubernetes.io/ingress.class: "gce"
   spec:
-    rules:
-      - http:
-          paths:
-          - path: /dev
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: stedi-nodeport-andruw-dev
-                port:
-                  number: 80
-          - path: /discounted
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: my-discounted-products
-                port:
-                  number: 80
-    # defaultBackend:
-    #   service:
-    #     name: stedi-nodeport-andruw-dev
-    #     port:
-    #       number: 80
+    defaultBackend:
+      service:
+        name: stedi-nodeport-andruw-test
+        port:
+          number: 80
